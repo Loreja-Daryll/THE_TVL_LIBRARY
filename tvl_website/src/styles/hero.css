@@ -1,0 +1,288 @@
+.tvl-hero {
+  position: relative;
+  padding: 10rem 1.5rem 6rem;
+  color: #ffffff;
+}
+
+.tvl-hero__inner {
+  position: relative;
+  max-width: 72rem;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .tvl-hero__inner { grid-template-columns: 7fr 5fr; }
+}
+
+.tvl-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.375rem 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.tvl-hero__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tvl-gold-light);
+  box-shadow: 0 0 6px var(--tvl-gold-light), 0 0 12px var(--tvl-gold);
+  animation: tvl-pulse 2s ease-in-out infinite;
+}
+
+@keyframes tvl-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.tvl-hero__eyebrow-text {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.tvl-hero__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  margin: 0;
+  color: #ffffff;
+}
+
+.tvl-hero .tvl-gold-gradient {
+  background: linear-gradient(
+    110deg,
+    var(--tvl-gold) 0%,
+    var(--tvl-gold-light) 25%,
+    var(--tvl-gold-bright) 45%,
+    #ffffff 50%,
+    var(--tvl-gold-bright) 55%,
+    var(--tvl-gold-light) 75%,
+    var(--tvl-gold) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 0 20px rgba(255, 216, 107, 0.4));
+  animation: tvl-shimmer-text 6s linear infinite;
+  font-weight: 700;
+}
+
+@keyframes tvl-shimmer-text {
+  0% { background-position: 250% 0; }
+  100% { background-position: -250% 0; }
+}
+
+.tvl-hero__sub {
+  margin-top: 2rem;
+  max-width: 36rem;
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.tvl-hero__ctas {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.tvl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tvl-btn--primary {
+  background: linear-gradient(135deg, var(--tvl-gold) 0%, var(--tvl-gold-light) 50%, var(--tvl-gold) 100%);
+  color: var(--tvl-charcoal);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 244, 194, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 8px 25px -4px rgba(229, 184, 66, 0.6),
+    0 15px 50px -8px rgba(229, 184, 66, 0.7);
+}
+
+.tvl-btn--primary:hover {
+  transform: scale(1.03);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 244, 194, 0.7),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 8px 25px -4px rgba(229, 184, 66, 0.8),
+    0 18px 60px -6px rgba(229, 184, 66, 0.95);
+}
+
+.tvl-btn__text {
+  position: relative;
+  z-index: 2;
+}
+
+.tvl-btn__shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.6) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: tvl-shimmer-btn 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes tvl-shimmer-btn {
+  0% { background-position: 200% 0; }
+  50%, 100% { background-position: -200% 0; }
+}
+
+.tvl-btn--ghost {
+  color: rgba(255, 255, 255, 0.9);
+}
+.tvl-btn--ghost:hover { color: #ffffff; }
+
+.tvl-hero__trust {
+  margin-top: 2.5rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.52);
+  letter-spacing: 0.02em;
+}
+
+.tvl-hero__visual { position: relative; }
+
+.tvl-hero__image-wrap {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+
+.tvl-hero__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tvl-hero__image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--tvl-ink), rgba(10, 9, 8, 0.2), transparent);
+}
+
+.tvl-hero__image-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 1.5rem;
+  box-shadow: inset 0 0 0 1px rgba(229, 184, 66, 0.3);
+  pointer-events: none;
+}
+
+.tvl-card {
+  position: absolute;
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  min-width: 180px;
+  z-index: 3;
+}
+
+.tvl-card--top-left { left: -1.5rem; top: 2.5rem; }
+.tvl-card--top-right { right: -1rem; top: 33%; }
+.tvl-card--bottom-left { left: -1rem; bottom: 6rem; }
+.tvl-card--bottom-right { right: -1.5rem; bottom: 1.5rem; }
+
+.tvl-card__inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tvl-card__icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: rgba(229, 184, 66, 0.15);
+  box-shadow: inset 0 0 0 1px rgba(229, 184, 66, 0.45);
+  color: var(--tvl-gold-light);
+}
+
+.tvl-card__icon svg { width: 1rem; height: 1rem; }
+
+.tvl-card__title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.tvl-card__sub {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 2px;
+}
+
+.tvl-fade {
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(8px);
+  animation: tvl-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes tvl-fade-up {
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.tvl-zoom-in {
+  opacity: 0;
+  transform: scale(0.96);
+  animation: tvl-zoom 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+@keyframes tvl-zoom {
+  to { opacity: 1; transform: scale(1); }
+}
+
+.tvl-fade-up {
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+  animation: tvl-card-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes tvl-card-in {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tvl-hero .tvl-gold-gradient,
+  .tvl-btn__shimmer,
+  .tvl-hero__dot { animation: none; }
+}
+
+@media (max-width: 1023px) {
+  .tvl-hero { padding-top: 7rem; }
+  .tvl-card { min-width: 150px; padding: 0.6rem 0.8rem; }
+  .tvl-card--top-left { left: -0.5rem; }
+  .tvl-card--top-right { right: -0.5rem; }
+  .tvl-card--bottom-left { left: -0.5rem; }
+  .tvl-card--bottom-right { right: -0.5rem; }
+}
