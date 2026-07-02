@@ -12,6 +12,7 @@ import './styles/reviews.css';
 import './styles/booking.css';
 import './styles/footer.css';
 import './styles/cursor.css';
+import './styles/legal.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -1,0 +1,90 @@
+.tvl-legal {
+  position: relative;
+  min-height: 100vh;
+  padding: 10rem 1.5rem 6rem;
+  color: #ffffff;
+}
+
+.tvl-legal__inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.tvl-legal__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 2.5rem;
+  transition: color 0.2s ease;
+}
+
+.tvl-legal__back:hover {
+  color: #ffd86b;
+}
+
+.tvl-legal__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #e5b842;
+  margin-bottom: 1.25rem;
+}
+
+.tvl-legal__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.1;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.75rem;
+}
+
+.tvl-legal__updated {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 3rem;
+}
+
+.tvl-legal__content {
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.tvl-legal__content h2 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 2.5rem 0 1rem;
+}
+
+.tvl-legal__content h2:first-child {
+  margin-top: 0;
+}
+
+.tvl-legal__content p {
+  margin: 0 0 1.25rem;
+}
+
+.tvl-legal__content ul {
+  margin: 0 0 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.tvl-legal__content li {
+  margin-bottom: 0.5rem;
+}
+
+.tvl-legal__content a {
+  color: #ffd86b;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.tvl-legal__content strong {
+  color: #ffffff;
+  font-weight: 600;
+}

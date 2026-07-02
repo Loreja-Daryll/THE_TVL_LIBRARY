@@ -8,8 +8,12 @@ const NAV_LINKS = [
 ];
 
 function scrollToSection(hash) {
+  if (!hash) return;
   const target = document.querySelector(hash);
-  if (!target) return;
+  if (!target) {
+    window.location.href = `/${hash}`;
+    return;
+  }
   const nav = document.getElementById('tvl-nav');
   const navOffset = nav ? nav.offsetHeight + 16 : 80;
   const targetY = target.getBoundingClientRect().top + window.scrollY - navOffset;

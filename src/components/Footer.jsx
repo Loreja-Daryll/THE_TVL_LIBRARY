@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { LINKS } from '../constants/links';
 
 const FacebookIcon = () => (
@@ -40,9 +41,9 @@ export default function Footer() {
             <span>© {year} The VA Library. All rights reserved.</span>
           </div>
           <div className="tvl-footer__right">
-            <a href={LINKS.becomeVaUrl}>Become a VA</a>
-            <a href={LINKS.privacyUrl}>Privacy</a>
-            <a href={LINKS.termsUrl}>Terms</a>
+            <Link to="/become-a-va">Become a VA</Link>
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
             <a href={`mailto:${LINKS.contactEmail}`}>{LINKS.contactEmail}</a>
           </div>
         </div>

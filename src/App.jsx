@@ -1,29 +1,26 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AmbientBackground from './components/AmbientBackground';
 import CustomCursor from './components/CustomCursor';
 import Nav from './components/Nav';
-import Hero from './components/Hero';
-import PainPoints from './components/PainPoints';
-import Services from './components/Services';
-import Founder from './components/Founder';
-import Reviews from './components/Reviews';
-import Booking from './components/Booking';
 import Footer from './components/Footer';
+import HomePage from './pages/HomePage';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import BecomeAVa from './pages/BecomeAVa';
 
-// Section order copied exactly from templates/index.json → "order":
-// [hero, pain_points, services, founder, reviews, booking, tvlfooter]
 export default function App() {
   return (
-    <>
+    <BrowserRouter>
       <AmbientBackground />
       <CustomCursor />
       <Nav />
-      <Hero />
-      <PainPoints />
-      <Services />
-      <Founder />
-      <Reviews />
-      <Booking />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/become-a-va" element={<BecomeAVa />} />
+      </Routes>
       <Footer />
-    </>
+    </BrowserRouter>
   );
 }
