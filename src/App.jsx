@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
 import AmbientBackground from './components/AmbientBackground';
 import CustomCursor from './components/CustomCursor';
 import Nav from './components/Nav';
@@ -11,6 +12,7 @@ import BecomeAVa from './pages/BecomeAVa';
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AmbientBackground />
       <CustomCursor />
       <Nav />
