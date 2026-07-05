@@ -21,6 +21,25 @@ const TODO_LINKS = {
   agencyInstagram: 'https://www.instagram.com/thevalibrary',
 };
 
+/* ---------------------------------------------------------
+   GOOGLE SHEETS LEAD CAPTURE
+   Quiz results + guide requests go to Sheet1.
+   Coaching waitlist signups go to Sheet2 (formType: 'coaching').
+   Sheet1 columns: Timestamp | Name | Email | Quiz Result | Lead Status | Notes
+   Sheet2 columns: Timestamp | Name | Email | Status | Notes
+--------------------------------------------------------- */
+
+const GOOGLE_SHEETS_WEB_APP_URL =
+  'https://script.google.com/macros/s/AKfycby0DEpAG_TvhNsGcIzeEJ0_yt-DOAHhDMQBcLZ2zi44UGZF7ZzgUGVykeOeIUPdhbtU/exec';
+
+function submitLeadToSheet({ name, email, quizResult, formType }) {
+  return fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, quizResult: quizResult || '', formType: formType || '' }),
+  }).catch(() => {});
+}
 
 /* ---------------------------------------------------------
    DATA
@@ -284,17 +303,7 @@ function NicheQuiz() {
   const handleReveal = (e) => {
     e.preventDefault();
     const finalNiche = nicheResults[computeNiche(answers)];
-    const mailto = buildMailtoUrl({
-      subject: `VA Starter Guide request — ${firstName || 'Free Learning Hub'}`,
-      bodyLines: [
-        `Name: ${firstName}`,
-        `Email: ${email}`,
-        `Quiz result: ${finalNiche.title}`,
-        '',
-        'Please send me the full VA Starter Guide PDF + resume template. Thank you!',
-      ],
-    });
-    window.open(mailto, '_blank');
+    submitLeadToSheet({ name: firstName, email, quizResult: finalNiche.title });
     setSent(true);
     setStep(quizQuestions.length + 1);
   };
@@ -372,7 +381,7 @@ function NicheQuiz() {
           <p>{niche.desc}</p>
           {sent && (
             <p className="bva-lead-note">
-              Nag-open na ng email draft papunta sa {LINKS.contactEmail} — i-send mo na lang para mareceive mo ang buong guide.
+              Thank you! Your answer has been saved, we'll follow up with the full VA Starter Guide in your email.
             </p>
           )}
           <button type="button" className="bva-quiz-back" onClick={restart}>
@@ -391,19 +400,12 @@ function NicheQuiz() {
 function GuideLeadForm() {
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
+  const [sent, setSent] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const mailto = buildMailtoUrl({
-      subject: `VA Starter Guide request — ${firstName || 'Free Learning Hub'}`,
-      bodyLines: [
-        `Name: ${firstName}`,
-        `Email: ${email}`,
-        '',
-        'Please send me the full VA Starter Guide PDF + resume template. Thank you!',
-      ],
-    });
-    window.open(mailto, '_blank');
+    submitLeadToSheet({ name: firstName, email, quizResult: 'Guide Request' });
+    setSent(true);
   };
 
   return (
@@ -427,7 +429,58 @@ function GuideLeadForm() {
         />
         <button type="submit" className="bva-btn-gold">Send it to me</button>
       </form>
+      {sent && (
+        <p className="bva-lead-note">
+          Thank you! Your details have been saved, we'll follow up with the full guide in your email.
+        </p>
+      )}
     </div>
+  );
+}
+
+/* ---------------------------------------------------------
+   COACHING WAITLIST FORM
+   Goes to Sheet2 (formType: 'coaching') so it's tracked separately
+   from the quiz/guide leads in Sheet1.
+--------------------------------------------------------- */
+
+function CoachingWaitlistForm() {
+  const [firstName, setFirstName] = useState('');
+  const [email, setEmail] = useState('');
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    submitLeadToSheet({ name: firstName, email, formType: 'coaching' });
+    setSent(true);
+  };
+
+  if (sent) {
+    return (
+      <p className="bva-lead-note">
+        Thank you! Your details have been saved, you'll be the first to know once coaching opens. 💜
+      </p>
+    );
+  }
+
+  return (
+    <form className="bva-lead-form" onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Your first name"
+        value={firstName}
+        onChange={(e) => setFirstName(e.target.value)}
+        required
+      />
+      <input
+        type="email"
+        placeholder="Your email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+      <button type="submit" className="bva-btn-gold">Message Me "COACH" to Join the Waitlist 💜</button>
+    </form>
   );
 }
 
@@ -727,16 +780,7 @@ export default function BecomeAVa() {
                 <li key={point}>{point}</li>
               ))}
             </ul>
-            <a
-              className="bva-btn-gold"
-              style={{ display: 'inline-block', textDecoration: 'none' }}
-              href={buildMailtoUrl({
-                subject: 'COACH — Join the Waitlist',
-                bodyLines: ["Hi Sheena, I'd like to join the waitlist for your live coaching. Please let me know once it's open!"],
-              })}
-            >
-              Message Me "COACH" to Join the Waitlist 💜
-            </a>
+            <CoachingWaitlistForm />
           </div>
         </section>
 
