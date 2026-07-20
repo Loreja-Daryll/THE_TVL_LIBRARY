@@ -3,12 +3,6 @@ import { Link } from 'react-router-dom';
 import { LINKS } from '../constants/links';
 import '../styles/become-a-va.css';
 
-/* =========================================================
-   ⚠️ TODO — PALITAN NG TOTOONG LINKS (walang URLs sa screenshots
-   na na-provide, kaya placeholder muna ang mga ito). I-right-click
-   → "Copy link address" sa Shopify page editor para makuha yung
-   totoong href ng bawat course/resource, tapos i-paste dito.
-   ========================================================= */
 const TODO_LINKS = {
   bookkeepingBasics: 'https://www.coursera.org/learn/bookkeeping-basics',
   accountingCoach: 'https://www.accountingcoach.com/',
@@ -26,6 +20,26 @@ const TODO_LINKS = {
   personalTiktok: 'https://www.tiktok.com/@sheena_vabigsis',
   agencyInstagram: 'https://www.instagram.com/thevalibrary',
 };
+
+/* ---------------------------------------------------------
+   GOOGLE SHEETS LEAD CAPTURE
+   Quiz results + guide requests go to Sheet1.
+   Coaching waitlist signups go to Sheet2 (formType: 'coaching').
+   Sheet1 columns: Timestamp | Name | Email | Quiz Result | Lead Status | Notes
+   Sheet2 columns: Timestamp | Name | Email | Status | Notes
+--------------------------------------------------------- */
+
+const GOOGLE_SHEETS_WEB_APP_URL =
+  'https://script.google.com/macros/s/AKfycby0DEpAG_TvhNsGcIzeEJ0_yt-DOAHhDMQBcLZ2zi44UGZF7ZzgUGVykeOeIUPdhbtU/exec';
+
+function submitLeadToSheet({ name, email, quizResult, formType }) {
+  return fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, quizResult: quizResult || '', formType: formType || '' }),
+  }).catch(() => {});
+}
 
 /* ---------------------------------------------------------
    DATA
@@ -251,11 +265,6 @@ function computeNiche(tags) {
   return best;
 }
 
-function buildMailtoUrl({ subject, bodyLines }) {
-  const body = bodyLines.join('\n');
-  return `mailto:${LINKS.contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
-
 function NicheQuiz() {
   const [step, setStep] = useState(0); // 0..5 = questions, 6 = lead capture, 7 = result
   const [answers, setAnswers] = useState([]);
@@ -284,17 +293,7 @@ function NicheQuiz() {
   const handleReveal = (e) => {
     e.preventDefault();
     const finalNiche = nicheResults[computeNiche(answers)];
-    const mailto = buildMailtoUrl({
-      subject: `VA Starter Guide request — ${firstName || 'Free Learning Hub'}`,
-      bodyLines: [
-        `Name: ${firstName}`,
-        `Email: ${email}`,
-        `Quiz result: ${finalNiche.title}`,
-        '',
-        'Please send me the full VA Starter Guide PDF + resume template. Thank you!',
-      ],
-    });
-    window.open(mailto, '_blank');
+    submitLeadToSheet({ name: firstName, email, quizResult: finalNiche.title });
     setSent(true);
     setStep(quizQuestions.length + 1);
   };
@@ -372,7 +371,7 @@ function NicheQuiz() {
           <p>{niche.desc}</p>
           {sent && (
             <p className="bva-lead-note">
-              Nag-open na ng email draft papunta sa {LINKS.contactEmail} — i-send mo na lang para mareceive mo ang buong guide.
+              Thank you! Your answer has been saved, we'll follow up with the full VA Starter Guide in your email.
             </p>
           )}
           <button type="button" className="bva-quiz-back" onClick={restart}>
@@ -391,19 +390,12 @@ function NicheQuiz() {
 function GuideLeadForm() {
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
+  const [sent, setSent] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const mailto = buildMailtoUrl({
-      subject: `VA Starter Guide request — ${firstName || 'Free Learning Hub'}`,
-      bodyLines: [
-        `Name: ${firstName}`,
-        `Email: ${email}`,
-        '',
-        'Please send me the full VA Starter Guide PDF + resume template. Thank you!',
-      ],
-    });
-    window.open(mailto, '_blank');
+    submitLeadToSheet({ name: firstName, email, quizResult: 'Guide Request' });
+    setSent(true);
   };
 
   return (
@@ -427,7 +419,58 @@ function GuideLeadForm() {
         />
         <button type="submit" className="bva-btn-gold">Send it to me</button>
       </form>
+      {sent && (
+        <p className="bva-lead-note">
+          Thank you! Your details have been saved, we'll follow up with the full guide in your email.
+        </p>
+      )}
     </div>
+  );
+}
+
+/* ---------------------------------------------------------
+   COACHING WAITLIST FORM
+   Goes to Sheet2 (formType: 'coaching') so it's tracked separately
+   from the quiz/guide leads in Sheet1.
+--------------------------------------------------------- */
+
+function CoachingWaitlistForm() {
+  const [firstName, setFirstName] = useState('');
+  const [email, setEmail] = useState('');
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    submitLeadToSheet({ name: firstName, email, formType: 'coaching' });
+    setSent(true);
+  };
+
+  if (sent) {
+    return (
+      <p className="bva-lead-note">
+        Thank you! Your details have been saved, you'll be the first to know once coaching opens.
+      </p>
+    );
+  }
+
+  return (
+    <form className="bva-lead-form" onSubmit={handleSubmit}>
+      <input
+        type="text"
+        placeholder="Your first name"
+        value={firstName}
+        onChange={(e) => setFirstName(e.target.value)}
+        required
+      />
+      <input
+        type="email"
+        placeholder="Your email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+      <button type="submit" className="bva-btn-gold">Message Me "COACH" to Join the Waitlist</button>
+    </form>
   );
 }
 
@@ -470,311 +513,302 @@ export default function BecomeAVa() {
     <div className="bva-page">
       <Link to="/" className="bva-back-link">← Back to home</Link>
 
-        {/* HERO */}
-        <section className="bva-hero">
-          <p className="bva-eyebrow">The VA Library · Free Learning Hub</p>
-          <h1>
-            Everything you need to <span className="bva-gold">become a VA.</span>
-          </h1>
-          <p className="bva-hero-sub">
-            Not just a list of links. This is the full path: the steps, the skills, how to build
-            your resume and portfolio, where to apply, and how to get paid. All in one place. All free.
-          </p>
-          <span className="bva-badge">100% Free · Walang Bayad, Walang Catch</span>
-          <nav className="bva-pillnav">
-            <a href="#niche-quiz">Find Your Niche</a>
-            <a href="#roadmap">The Roadmap</a>
-            <a href="#niche-courses">Pick a Niche</a>
-            <a href="#resume">Resume</a>
-            <a href="#portfolio">Portfolio</a>
-            <a href="#apply">Where to Apply</a>
-            <a href="#paid">Getting Paid</a>
-            <a href="#coaching">Coaching</a>
-          </nav>
-        </section>
+      {/* HERO */}
+      <section className="bva-hero">
+        <p className="bva-eyebrow">The VA Library · Free Learning Hub</p>
+        <h1>
+          Everything you need to <span className="bva-gold">become a VA.</span>
+        </h1>
+        <p className="bva-hero-sub">
+          Not just a list of links. This is the full path: the steps, the skills, how to build
+          your resume and portfolio, where to apply, and how to get paid. All in one place. All free.
+        </p>
+        <span className="bva-badge">100% Free · Walang Bayad, Walang Catch</span>
+        <nav className="bva-pillnav">
+          <a href="#niche-quiz">Find Your Niche</a>
+          <a href="#roadmap">The Roadmap</a>
+          <a href="#niche-courses">Pick a Niche</a>
+          <a href="#resume">Resume</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#apply">Where to Apply</a>
+          <a href="#paid">Getting Paid</a>
+          <a href="#coaching">Coaching</a>
+        </nav>
+      </section>
 
-        {/* OVERVIEW GRID */}
-        <section className="bva-overview-section">
-          <div className="bva-overview-grid">
-            {overviewSteps.map((step, i) => (
-              <a key={step.title} href={step.anchor} className="bva-overview-card">
-                <span className="bva-overview-num">{i + 1}</span>
-                <h3>{step.title}</h3>
-                <p>{step.desc}</p>
-              </a>
-            ))}
-          </div>
-        </section>
-
-        {/* NICHE QUIZ */}
-        <section className="bva-section" id="niche-quiz">
-          <h2>Find your <span className="bva-gold">perfect niche</span></h2>
-          <p>
-            Not sure where to start? Answer 6 quick questions and I'll point you to the VA niche
-            that fits your background, skills, and personality best.
-          </p>
-          <NicheQuiz />
-        </section>
-
-        {/* ROADMAP */}
-        <section className="bva-section" id="roadmap">
-          <h2>Your path from <span className="bva-gold">zero to hired</span></h2>
-          <p>You don't need experience or a degree. You need the right steps, in the right order. Here's the exact path.</p>
-          <ol className="bva-steps">
-            {roadmapSteps.map((step, i) => (
-              <li className="bva-step" key={step.title}>
-                <span className="bva-step-num">{i + 1}</span>
-                <div className="bva-step-body">
-                  <h3>{step.title}</h3>
-                  <p>{step.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <blockquote className="bva-quote">You don't get ready, then start. You start, then get ready.</blockquote>
-        </section>
-
-        {/* PICK A NICHE — COURSES */}
-        <section className="bva-section" id="niche-courses">
-          <h2>Pick your <span className="bva-gold">niche</span> &amp; learn it free</h2>
-          <p>
-            These are the most in-demand, beginner-friendly VA niches. Pick ONE to focus on first.
-            The courses below are free (some give certificates you can add to your resume). Treat
-            these as your training, not just links to skim.
-          </p>
-          {courseCategories.map((cat) => (
-            <div key={cat.label}>
-              <p className="bva-cat-label">{cat.label}</p>
-              <div className="bva-card-grid">
-                {cat.courses.map((course) => (
-                  <a
-                    key={course.title}
-                    className="bva-card"
-                    href={course.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <div className="bva-card-top">
-                      <h3>{course.title}</h3>
-                      <span className="bva-card-provider">{course.provider}</span>
-                    </div>
-                    <p>{course.desc}</p>
-                    <span className="bva-tag">{course.tag}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          ))}
-        </section>
-
-        {/* RESUME */}
-        <section className="bva-section" id="resume">
-          <h2>How to build your <span className="bva-gold">VA resume</span></h2>
-          <p>Keep it clean, one page, and focused on how you HELP clients, not just your job history. Copy this exact structure:</p>
-          <ol className="bva-steps">
-            {resumeSteps.map((step, i) => (
-              <li className="bva-step" key={step.title}>
-                <span className="bva-step-num">{i + 1}</span>
-                <div className="bva-step-body">
-                  <h3>{step.title}</h3>
-                  <p>{step.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <p style={{ marginTop: '1.5rem', maxWidth: 'none' }}>
-            Save it as "Firstname_Lastname_VA_Resume.pdf" so it looks professional.
-          </p>
-          <a
-            className="bva-card bva-highlight-card"
-            href={TODO_LINKS.resumeTemplateDoc}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ marginTop: '1rem', display: 'block' }}
-          >
-            <div className="bva-card-top">
-              <h3>Copy my exact resume template</h3>
-              <span className="bva-card-provider">Google Doc</span>
-            </div>
-            <p>Open the link, then File → Make a copy, and edit your own version.</p>
-          </a>
-        </section>
-
-        {/* PORTFOLIO */}
-        <section className="bva-section" id="portfolio">
-          <h2>How to build your <span className="bva-gold">portfolio</span></h2>
-          <p>A portfolio is your proof. You don't need paid clients to build one. Create sample work that shows what you can do.</p>
-          <ol className="bva-steps">
-            {portfolioSteps.map((step, i) => (
-              <li className="bva-step" key={step.title}>
-                <span className="bva-step-num">{i + 1}</span>
-                <div className="bva-step-body">
-                  <h3>{step.title}</h3>
-                  <p>{step.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <blockquote className="bva-quote">
-            Experience is just proof you can do the work, and proof can be created. Don't wait for
-            someone to give you a chance. Create your own.
-          </blockquote>
-        </section>
-
-        {/* EQUIPMENT */}
-        <section className="bva-section" id="equipment">
-          <h2>Equipment you need to <span className="bva-gold">get started</span></h2>
-          <p>You don't need a fancy setup to begin. Here's what's essential to start, and what's nice to add later as you grow.</p>
-          <div className="bva-card-grid">
-            {equipmentItems.map((item) => (
-              <div className="bva-card" key={item.title}>
-                <h3 style={{ marginBottom: '0.4rem' }}>{item.title}</h3>
-                <p>{item.desc}</p>
-                <span className={`bva-tag ${item.tag === 'Nice to Have' ? 'bva-tag--muted' : ''}`}>
-                  {item.tag}
-                </span>
-              </div>
-            ))}
-          </div>
-          <blockquote className="bva-quote">
-            Don't let "I don't have the perfect setup" stop you. Start with what you have. Upgrade as you earn.
-          </blockquote>
-        </section>
-
-        {/* WHERE TO APPLY */}
-        <section className="bva-section" id="apply">
-          <h2>Where to find <span className="bva-gold">VA jobs</span></h2>
-          <p>The legit platforms where Filipino VAs find clients. Start with 1 or 2, build a strong profile, and apply consistently.</p>
-          {applyGroups.map((group) => (
-            <div className="bva-apply-group" key={group.label}>
-              <p className="bva-cat-label">{group.label}</p>
-              <div className="bva-card-grid">
-                {group.links.map((link) => (
-                  <a
-                    key={link.title}
-                    className="bva-card"
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <h3 style={{ marginBottom: '0.3rem' }}>{link.title}</h3>
-                    <p style={{ marginBottom: 0 }}>{link.desc}</p>
-                  </a>
-                ))}
-              </div>
-            </div>
-          ))}
-          <blockquote className="bva-quote">
-            Don't spread thin. A strong Upwork or OnlineJobs.ph profile beats five weak ones.
-          </blockquote>
-        </section>
-
-        {/* GETTING PAID */}
-        <section className="bva-section" id="paid">
-          <h2>How you'll <span className="bva-gold">get paid</span></h2>
-          <p>
-            Set these up BEFORE you land a client. Nothing looks more unprepared than scrambling
-            when a client asks "how do I pay you?" Being ready makes you look professional.
-          </p>
-          <div className="bva-card-grid">
-            {paymentMethods.map((method) => (
-              <div className="bva-card" key={method.title}>
-                <h3 style={{ marginBottom: '0.4rem' }}>{method.title}</h3>
-                <p style={{ marginBottom: 0 }}>{method.desc}</p>
-              </div>
-            ))}
-          </div>
-          <p style={{ marginTop: '1.75rem', marginBottom: '0.25rem', maxWidth: 'none', color: '#E5B842', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.8rem', fontWeight: 700 }}>
-            Before your first client
-          </p>
-          <ul className="bva-checklist">
-            {paymentChecklist.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </section>
-
-        {/* RED FLAGS */}
-        <section className="bva-section" id="red-flags">
-          <h2>Protect yourself: <span className="bva-gold">red flags</span></h2>
-          <p>Real opportunities feel calm, clear, and professional. If something feels off, it probably is. Watch for these:</p>
-          <ul className="bva-flags">
-            {redFlags.map((flag) => (
-              <li key={flag}>{flag}</li>
-            ))}
-          </ul>
-        </section>
-
-        {/* PRINTABLE GUIDE */}
-        <section className="bva-section" id="guide">
-          <GuideLeadForm />
-        </section>
-
-        {/* COACHING */}
-        <section className="bva-section" id="coaching">
-          <div className="bva-coaching">
-            <span className="bva-coaching-pill">Coming Soon</span>
-            <h2>You have the map. Soon, learn to <span className="bva-gold">get hired.</span></h2>
-            <p>
-              Everything above teaches you the skills. But in 2026, the VAs who actually get hired
-              are the ones who know how to use AI to work faster and smarter than the rest. That's
-              the part no free course teaches, and it's exactly what I'll coach, live. My live group
-              coaching is launching soon.
-            </p>
-            <ul className="bva-coaching-list">
-              {coachingPoints.map((point) => (
-                <li key={point}>{point}</li>
-              ))}
-            </ul>
-            <a
-              className="bva-btn-gold"
-              style={{ display: 'inline-block', textDecoration: 'none' }}
-              href={buildMailtoUrl({
-                subject: 'COACH — Join the Waitlist',
-                bodyLines: ["Hi Sheena, I'd like to join the waitlist for your live coaching. Please let me know once it's open!"],
-              })}
-            >
-              Message Me "COACH" to Join the Waitlist
+      {/* OVERVIEW GRID */}
+      <section className="bva-overview-section">
+        <div className="bva-overview-grid">
+          {overviewSteps.map((step, i) => (
+            <a key={step.title} href={step.anchor} className="bva-overview-card">
+              <span className="bva-overview-num">{i + 1}</span>
+              <h3>{step.title}</h3>
+              <p>{step.desc}</p>
             </a>
-          </div>
-        </section>
+          ))}
+        </div>
+      </section>
 
-        {/* STAY CONNECTED */}
-        <section className="bva-section bva-connect" id="connect">
-          <p className="bva-connect-label">Stay Connected</p>
-          <h2>Follow my <span className="bva-gold">journey</span></h2>
-          <p>For daily tips, real talk, and the AI tricks that get VAs hired. Come say hi</p>
+      {/* NICHE QUIZ */}
+      <section className="bva-section" id="niche-quiz">
+        <h2>Find your <span className="bva-gold">perfect niche</span></h2>
+        <p>
+          Not sure where to start? Answer 6 quick questions and I'll point you to the VA niche
+          that fits your background, skills, and personality best.
+        </p>
+        <NicheQuiz />
+      </section>
+
+      {/* ROADMAP */}
+      <section className="bva-section" id="roadmap">
+        <h2>Your path from <span className="bva-gold">zero to hired</span></h2>
+        <p>You don't need experience or a degree. You need the right steps, in the right order. Here's the exact path.</p>
+        <ol className="bva-steps">
+          {roadmapSteps.map((step, i) => (
+            <li className="bva-step" key={step.title}>
+              <span className="bva-step-num">{i + 1}</span>
+              <div className="bva-step-body">
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <blockquote className="bva-quote">You don't get ready, then start. You start, then get ready.</blockquote>
+      </section>
+
+      {/* PICK A NICHE — COURSES */}
+      <section className="bva-section" id="niche-courses">
+        <h2>Pick your <span className="bva-gold">niche</span> &amp; learn it free</h2>
+        <p>
+          These are the most in-demand, beginner-friendly VA niches. Pick ONE to focus on first.
+          The courses below are free (some give certificates you can add to your resume). Treat
+          these as your training, not just links to skim.
+        </p>
+        {courseCategories.map((cat) => (
+          <div key={cat.label}>
+            <p className="bva-cat-label">{cat.label}</p>
+            <div className="bva-card-grid">
+              {cat.courses.map((course) => (
+                <a
+                  key={course.title}
+                  className="bva-card"
+                  href={course.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div className="bva-card-top">
+                    <h3>{course.title}</h3>
+                    <span className="bva-card-provider">{course.provider}</span>
+                  </div>
+                  <p>{course.desc}</p>
+                  <span className="bva-tag">{course.tag}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {/* RESUME */}
+      <section className="bva-section" id="resume">
+        <h2>How to build your <span className="bva-gold">VA resume</span></h2>
+        <p>Keep it clean, one page, and focused on how you HELP clients, not just your job history. Copy this exact structure:</p>
+        <ol className="bva-steps">
+          {resumeSteps.map((step, i) => (
+            <li className="bva-step" key={step.title}>
+              <span className="bva-step-num">{i + 1}</span>
+              <div className="bva-step-body">
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p style={{ marginTop: '1.5rem', maxWidth: 'none' }}>
+          Save it as "Firstname_Lastname_VA_Resume.pdf" so it looks professional.
+        </p>
+        <a
+          className="bva-card bva-highlight-card"
+          href={TODO_LINKS.resumeTemplateDoc}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ marginTop: '1rem', display: 'block' }}
+        >
+          <div className="bva-card-top">
+            <h3>Copy my exact resume template</h3>
+            <span className="bva-card-provider">Google Doc</span>
+          </div>
+          <p>Open the link, then File → Make a copy, and edit your own version.</p>
+        </a>
+      </section>
+
+      {/* PORTFOLIO */}
+      <section className="bva-section" id="portfolio">
+        <h2>How to build your <span className="bva-gold">portfolio</span></h2>
+        <p>A portfolio is your proof. You don't need paid clients to build one. Create sample work that shows what you can do.</p>
+        <ol className="bva-steps">
+          {portfolioSteps.map((step, i) => (
+            <li className="bva-step" key={step.title}>
+              <span className="bva-step-num">{i + 1}</span>
+              <div className="bva-step-body">
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <blockquote className="bva-quote">
+          Experience is just proof you can do the work, and proof can be created. Don't wait for
+          someone to give you a chance. Create your own.
+        </blockquote>
+      </section>
+
+      {/* EQUIPMENT */}
+      <section className="bva-section" id="equipment">
+        <h2>Equipment you need to <span className="bva-gold">get started</span></h2>
+        <p>You don't need a fancy setup to begin. Here's what's essential to start, and what's nice to add later as you grow.</p>
+        <div className="bva-card-grid">
+          {equipmentItems.map((item) => (
+            <div className="bva-card" key={item.title}>
+              <h3 style={{ marginBottom: '0.4rem' }}>{item.title}</h3>
+              <p>{item.desc}</p>
+              <span className={`bva-tag ${item.tag === 'Nice to Have' ? 'bva-tag--muted' : ''}`}>
+                {item.tag}
+              </span>
+            </div>
+          ))}
+        </div>
+        <blockquote className="bva-quote">
+          Don't let "I don't have the perfect setup" stop you. Start with what you have. Upgrade as you earn.
+        </blockquote>
+      </section>
+
+      {/* WHERE TO APPLY */}
+      <section className="bva-section" id="apply">
+        <h2>Where to find <span className="bva-gold">VA jobs</span></h2>
+        <p>The legit platforms where Filipino VAs find clients. Start with 1 or 2, build a strong profile, and apply consistently.</p>
+        {applyGroups.map((group) => (
+          <div className="bva-apply-group" key={group.label}>
+            <p className="bva-cat-label">{group.label}</p>
+            <div className="bva-card-grid">
+              {group.links.map((link) => (
+                <a
+                  key={link.title}
+                  className="bva-card"
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <h3 style={{ marginBottom: '0.3rem' }}>{link.title}</h3>
+                  <p style={{ marginBottom: 0 }}>{link.desc}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+        <blockquote className="bva-quote">
+          Don't spread thin. A strong Upwork or OnlineJobs.ph profile beats five weak ones.
+        </blockquote>
+      </section>
+
+      {/* GETTING PAID */}
+      <section className="bva-section" id="paid">
+        <h2>How you'll <span className="bva-gold">get paid</span></h2>
+        <p>
+          Set these up BEFORE you land a client. Nothing looks more unprepared than scrambling
+          when a client asks "how do I pay you?" Being ready makes you look professional.
+        </p>
+        <div className="bva-card-grid">
+          {paymentMethods.map((method) => (
+            <div className="bva-card" key={method.title}>
+              <h3 style={{ marginBottom: '0.4rem' }}>{method.title}</h3>
+              <p style={{ marginBottom: 0 }}>{method.desc}</p>
+            </div>
+          ))}
+        </div>
+        <p style={{ marginTop: '1.75rem', marginBottom: '0.25rem', maxWidth: 'none', color: '#E5B842', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.8rem', fontWeight: 700 }}>
+          Before your first client
+        </p>
+        <ul className="bva-checklist">
+          {paymentChecklist.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
+
+      {/* RED FLAGS */}
+      <section className="bva-section" id="red-flags">
+        <h2>Protect yourself: <span className="bva-gold">red flags</span></h2>
+        <p>Real opportunities feel calm, clear, and professional. If something feels off, it probably is. Watch for these:</p>
+        <ul className="bva-flags">
+          {redFlags.map((flag) => (
+            <li key={flag}>{flag}</li>
+          ))}
+        </ul>
+      </section>
+
+      {/* PRINTABLE GUIDE */}
+      <section className="bva-section" id="guide">
+        <GuideLeadForm />
+      </section>
+
+      {/* COACHING */}
+      <section className="bva-section" id="coaching">
+        <div className="bva-coaching">
+          <span className="bva-coaching-pill">Coming Soon</span>
+          <h2>You have the map. Soon, learn to <span className="bva-gold">get hired.</span></h2>
+          <p>
+            Everything above teaches you the skills. But in 2026, the VAs who actually get hired
+            are the ones who know how to use AI to work faster and smarter than the rest. That's
+            the part no free course teaches, and it's exactly what I'll coach, live. My live group
+            coaching is launching soon.
+          </p>
+          <ul className="bva-coaching-list">
+            {coachingPoints.map((point) => (
+              <li key={point}>{point}</li>
+            ))}
+          </ul>
+          <CoachingWaitlistForm />
+        </div>
+      </section>
+
+      {/* STAY CONNECTED */}
+      <section className="bva-section bva-connect" id="connect">
+        <p className="bva-connect-label">Stay Connected</p>
+        <h2>Follow my <span className="bva-gold">journey</span></h2>
+        <p>For daily tips, real talk, and the AI tricks that get VAs hired. Come say hi</p>
+        <div className="bva-icon-row">
+          <a className="bva-icon-btn" href={TODO_LINKS.personalFacebook} target="_blank" rel="noopener noreferrer" aria-label="Personal Facebook">
+            <FacebookIcon />
+          </a>
+          <a className="bva-icon-btn" href={TODO_LINKS.personalInstagram} target="_blank" rel="noopener noreferrer" aria-label="Personal Instagram">
+            <InstagramIcon />
+          </a>
+          <a className="bva-icon-btn" href={TODO_LINKS.personalTiktok} target="_blank" rel="noopener noreferrer" aria-label="Personal TikTok">
+            <TiktokIcon />
+          </a>
+        </div>
+
+        <div className="bva-connect-group" style={{ marginTop: '2.5rem' }}>
+          <p className="bva-connect-label">And Follow the Agency</p>
+          <p className="bva-connect-name">The VA Library</p>
           <div className="bva-icon-row">
-            <a className="bva-icon-btn" href={TODO_LINKS.personalFacebook} target="_blank" rel="noopener noreferrer" aria-label="Personal Facebook">
+            <a className="bva-icon-btn" href={LINKS.socialFacebook} target="_blank" rel="noopener noreferrer" aria-label="Agency Facebook">
               <FacebookIcon />
             </a>
-            <a className="bva-icon-btn" href={TODO_LINKS.personalInstagram} target="_blank" rel="noopener noreferrer" aria-label="Personal Instagram">
+            <a className="bva-icon-btn" href={TODO_LINKS.agencyInstagram} target="_blank" rel="noopener noreferrer" aria-label="Agency Instagram">
               <InstagramIcon />
             </a>
-            <a className="bva-icon-btn" href={TODO_LINKS.personalTiktok} target="_blank" rel="noopener noreferrer" aria-label="Personal TikTok">
-              <TiktokIcon />
-            </a>
           </div>
+        </div>
 
-          <div className="bva-connect-group" style={{ marginTop: '2.5rem' }}>
-            <p className="bva-connect-label">And Follow the Agency</p>
-            <p className="bva-connect-name">The VA Library</p>
-            <div className="bva-icon-row">
-              <a className="bva-icon-btn" href={LINKS.socialFacebook} target="_blank" rel="noopener noreferrer" aria-label="Agency Facebook">
-                <FacebookIcon />
-              </a>
-              <a className="bva-icon-btn" href={TODO_LINKS.agencyInstagram} target="_blank" rel="noopener noreferrer" aria-label="Agency Instagram">
-                <InstagramIcon />
-              </a>
-            </div>
-          </div>
+        <div className="bva-final-cta">
+          <h2>Are you ready to change your <span className="bva-gold">story?</span></h2>
+          <p>You now have everything you need to begin. Pick your niche, follow the steps, and take your first step today.</p>
+        </div>
+      </section>
 
-          <div className="bva-final-cta">
-            <h2>Are you ready to change your <span className="bva-gold">story?</span></h2>
-            <p>You now have everything you need to begin. Pick your niche, follow the steps, and take your first step today.</p>
-          </div>
-        </section>
-
-      </div>
+    </div>
   );
 }
