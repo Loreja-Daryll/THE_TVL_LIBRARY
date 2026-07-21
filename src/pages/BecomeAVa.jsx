@@ -162,7 +162,7 @@ const paymentChecklist = [
 ];
 
 const redFlags = [
-  '"Pay a fee to start working" — real clients pay YOU, not the reverse.',
+  '"Pay a fee to start working" real clients pay YOU, not the reverse.',
   'Asking for your bank login or OTP. Never. Walk away.',
   'Too-good-to-be-true pay for tiny tasks. Usually a scam.',
   'No contract or unclear scope. Always get terms in writing.',
