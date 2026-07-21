@@ -296,6 +296,27 @@
   font-weight: 700;
 }
 
+/* Center the last (odd) payment card so it doesn't sit left-aligned alone */
+/* Center the last (odd) payment card, matching the exact width
+   of the other cards instead of a fixed pixel size, so it scales
+   correctly at every screen width */
+#paid .bva-card-grid > *:last-child {
+  grid-column: 1 / -1;
+  width: calc(50% - 0.5rem);
+  margin: 0 auto;
+}
+
+/* On mobile the grid collapses to 1 column already, so the
+   centering override is no longer needed — reset it back to
+   normal full-width behavior like every other card */
+@media (max-width: 640px) {
+  #paid .bva-card-grid > *:last-child {
+    grid-column: auto;
+    width: auto;
+    margin: 0;
+  }
+}
+
 /* Red flags list */
 .bva-flags {
   list-style: none;

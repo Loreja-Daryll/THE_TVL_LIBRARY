@@ -147,10 +147,11 @@ const applyGroups = [
 ];
 
 const paymentMethods = [
-  { title: 'Wise', desc: 'Low fees, great exchange rates. The Filipino VA favorite.' },
-  { title: 'PayPal', desc: 'Most requested by clients. Easy invoicing.' },
-  { title: 'Payoneer', desc: 'Great for Upwork/Fiverr payouts + PH bank withdrawals.' },
-  { title: 'GCash / Maya', desc: 'For cashing out your earnings to pesos.' },
+  { title: 'Wise', desc: 'Low fees, great exchange rates. The Filipino VA favorite.', url: 'https://wise.com/ph/' },
+  { title: 'PayPal', desc: 'Most requested by clients. Easy invoicing.', url: 'https://www.paypal.com/ph/home' },
+  { title: 'Payoneer', desc: 'Great for Upwork/Fiverr payouts + PH bank withdrawals.', url: 'https://www.payoneer.com/' },
+  { title: 'GCash', desc: 'For cashing out your earnings to pesos.', url: 'https://www.gcash.com/' },
+  { title: 'Maya', desc: 'Another popular option for cashing out to pesos.', url: 'https://www.maya.ph/' },
 ];
 
 const paymentChecklist = [
@@ -721,10 +722,16 @@ export default function BecomeAVa() {
         </p>
         <div className="bva-card-grid">
           {paymentMethods.map((method) => (
-            <div className="bva-card" key={method.title}>
+            <a
+              className="bva-card"
+              key={method.title}
+              href={method.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <h3 style={{ marginBottom: '0.4rem' }}>{method.title}</h3>
               <p style={{ marginBottom: 0 }}>{method.desc}</p>
-            </div>
+            </a>
           ))}
         </div>
         <p style={{ marginTop: '1.75rem', marginBottom: '0.25rem', maxWidth: 'none', color: '#E5B842', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.8rem', fontWeight: 700 }}>
