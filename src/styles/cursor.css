@@ -1,0 +1,65 @@
+/* Note: we intentionally do NOT hide the native cursor (no `cursor: none`)
+   so it can never disappear. The gold dot/ring below are purely decorative,
+   layered on top of the normal arrow cursor. */
+
+.tvl-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: #ffd86b;
+  box-shadow: 0 0 6px #ffd86b, 0 0 12px rgba(229, 184, 66, 0.6);
+  pointer-events: none;
+  z-index: 2000000;
+  opacity: 0;
+  transition: opacity 0.2s ease, width 0.2s ease, height 0.2s ease, margin 0.2s ease;
+}
+
+.tvl-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  border-radius: 50%;
+  border: 1px solid rgba(229, 184, 66, 0.5);
+  pointer-events: none;
+  z-index: 1999999;
+  opacity: 0;
+  transition: opacity 0.2s ease, width 0.25s ease, height 0.25s ease, margin 0.25s ease, border-color 0.25s ease;
+}
+
+.tvl-cursor-dot.is-visible,
+.tvl-cursor-ring.is-visible {
+  opacity: 1;
+}
+
+.tvl-cursor-dot.is-pointer {
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+}
+
+.tvl-cursor-ring.is-pointer {
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border-color: rgba(255, 216, 107, 0.85);
+}
+
+@media (pointer: coarse) {
+  .tvl-cursor-dot,
+  .tvl-cursor-ring {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tvl-cursor-ring {
+    transition: opacity 0.2s ease;
+  }
+}

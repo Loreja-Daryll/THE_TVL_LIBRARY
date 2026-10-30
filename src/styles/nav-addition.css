@@ -1,0 +1,10 @@
+
+/* ============================================================ */
+/*  ADDED: smaller CTA-style variant for the "Course" nav link   */
+/*  Used together with .tvl-nav__cta (e.g. className="tvl-nav__cta tvl-nav__cta--sm") */
+/*  so it keeps the same gold pill look/border/hover, just smaller. */
+/* ============================================================ */
+.tvl-nav__cta--sm {
+  padding: 0.4rem 0.75rem;
+  font-size: 9px;
+}
