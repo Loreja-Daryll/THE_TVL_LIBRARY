@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { LINKS } from '../constants/links';
 
 const NAV_LINKS = [
   { label: 'About', href: '#about' },
   { label: 'Services', href: '#services' },
-  { label: 'Process', href: '#process' },
+  { label: 'Process', href: '#free-preview' },
   { label: 'Contact', href: '#contact' },
 ];
 
@@ -63,17 +64,25 @@ export default function Nav() {
               {link.label}
             </a>
           ))}
-          <a href="#booking" className="tvl-nav__mobile-cta" onClick={(e) => handleLinkClick(e, '#booking')}>
+          <a
+            href={LINKS.calendlyUrl}
+            className="tvl-nav__mobile-cta"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setOpen(false)}
+          >
             Book a Discovery Call
           </a>
-          <a
+          {/* Course page isn't finished yet. Commented out, not deleted,
+              bring it back by uncommenting once it's ready. */}
+          {/* <a
             href="https://tvl-course-dashboard.pages.dev/"
             className="tvl-nav__mobile-link"
             target="_blank"
             rel="noopener noreferrer"
           >
             Course
-          </a>
+          </a> */}
         </nav>
       </div>
 
@@ -100,18 +109,25 @@ export default function Nav() {
             </nav>
 
             <div className="tvl-nav__right">
-              <a href="#booking" className="tvl-nav__cta" onClick={(e) => handleDesktopLinkClick(e, '#booking')}>
+              <a
+                href={LINKS.calendlyUrl}
+                className="tvl-nav__cta"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <span>Book a Discovery Call</span>
               </a>
 
-              <a
+              {/* Course page isn't finished yet. Commented out, not deleted,
+                  bring it back by uncommenting once it's ready. */}
+              {/* <a
                 href="https://tvl-course-dashboard.pages.dev/"
                 className="tvl-nav__cta tvl-nav__cta--sm"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <span>Course</span>
-              </a>
+              </a> */}
 
               <button
                 className="tvl-nav__toggle"

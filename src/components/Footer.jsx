@@ -42,7 +42,9 @@ export default function Footer() {
           </div>
           <div className="tvl-footer__right">
             <Link to="/become-a-va">Become a VA</Link>
-            <a href="https://resume-45v.pages.dev/" target="_blank" rel="noopener noreferrer">Resume Gallery</a>
+            {/* Resume Gallery isn't finished yet. Commented out, not deleted,
+                bring it back by uncommenting once it's ready. */}
+            {/* <a href="https://resume-45v.pages.dev/" target="_blank" rel="noopener noreferrer">Resume Gallery</a> */}
             <Link to="/privacy">Privacy</Link>
             <Link to="/terms">Terms</Link>
             <a href={`mailto:${LINKS.contactEmail}`}>{LINKS.contactEmail}</a>
