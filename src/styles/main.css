@@ -5,7 +5,9 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* Lenis drives smooth scrolling in JS (see src/lib/smoothScroll.js); native
+     smooth-scroll here would double up and fight it on anchor jumps. */
+  scroll-behavior: auto;
 }
 
 html,
@@ -21,6 +23,18 @@ body {
   flex-direction: column !important;
   min-height: auto !important;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Route page-transition curtain (src/hooks/usePageTransition.js). Covers
+   everything, including nav (999999) and the custom cursor (2000000), while
+   swapping routes. Hidden by default; JS toggles display + clip-path. */
+.tvl-route-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 3000000;
+  display: none;
+  pointer-events: none;
+  background: linear-gradient(135deg, #0a0908 0%, #1a1410 55%, #e5b842 100%);
 }
 
 #root {
@@ -82,7 +96,14 @@ a {
 [id="process"],
 [id="contact"],
 [id="booking"],
-[id="reviews"] {
+[id="reviews"],
+[id="hero"],
+[id="work"],
+[id="how-it-works"],
+[id="why-tvl"],
+[id="faq"],
+[id="lets-talk"],
+[id="ready-to-grow"] {
   scroll-margin-top: 6rem;
 }
 

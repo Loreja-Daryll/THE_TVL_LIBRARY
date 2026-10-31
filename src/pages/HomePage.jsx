@@ -1,43 +1,56 @@
-import { useState } from 'react';
-import '../styles/home-rebuild.css';
+import { useEffect, useRef } from 'react';
+import '../styles/home.css';
+import useGsapReveal from '../hooks/useGsapReveal';
+import useSectionTransitions from '../hooks/useSectionTransitions';
+import usePointerEffects from '../hooks/usePointerEffects';
+import IntroLoader, { whenIntroDone } from '../components/home/IntroLoader';
+import SectionDots from '../components/home/SectionDots';
+import { startActiveSectionTracking } from '../lib/activeSection';
+import { scrollToTarget } from '../lib/smoothScroll';
 import Hero from '../components/home/Hero';
-import TrustStrip from '../components/home/TrustStrip';
-import ServicesCarousel from '../components/home/ServicesCarousel';
-import OurWork from '../components/home/OurWork';
-import FreePreview from '../components/home/FreePreview';
-import TeamSection from '../components/home/TeamSection';
-import PricingSection from '../components/home/PricingSection';
-import FaqSection from '../components/home/FaqSection';
-import FinalCta from '../components/home/FinalCta';
-import MobileStickyCta from '../components/home/MobileStickyCta';
+import Services from '../components/home/Services';
+import SelectedWork from '../components/home/SelectedWork';
+import HowItWorks from '../components/home/HowItWorks';
+import WhyWorkWithTvl from '../components/home/WhyWorkWithTvl';
+import FaqTalk from '../components/home/FaqTalk';
+import ReadyToGrow from '../components/home/ReadyToGrow';
 
 export default function HomePage() {
-  // Clicking "Get a free ad concept" (etc.) on the services carousel or the
-  // work grid jumps straight to step 2 of the Free Preview form, with that
-  // type pre-selected.
-  const [initialPreviewType, setInitialPreviewType] = useState(null);
+  const pageRef = useRef(null);
+  useGsapReveal(pageRef);
+  useSectionTransitions(pageRef);
+  usePointerEffects(pageRef);
 
-  const handleSelectPreview = (type) => {
-    setInitialPreviewType(type || 'choose');
-    const target = document.getElementById('free-preview');
-    target?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // Opening a link like /#faq: teleport there once layout and the intro are ready,
+  // THEN start syncing the URL hash (so tracking never erases the hash first).
+  useEffect(() => {
+    let stopTracking = () => {};
+    let timer = 0;
+    const cancelWait = whenIntroDone(() => {
+      timer = window.setTimeout(() => {
+        const { hash } = window.location;
+        if (hash && document.querySelector(hash)) scrollToTarget(hash);
+        stopTracking = startActiveSectionTracking();
+      }, 250);
+    });
+    return () => {
+      cancelWait();
+      window.clearTimeout(timer);
+      stopTracking();
+    };
+  }, []);
 
   return (
-    <div className="tvl-rebuild">
+    <div className="tvl-home" ref={pageRef}>
+      <IntroLoader />
+      <SectionDots />
       <Hero />
-      <TrustStrip />
-      <ServicesCarousel onSelectPreview={handleSelectPreview} />
-      <OurWork onSelectPreview={handleSelectPreview} />
-      <FreePreview
-        initialPreviewType={initialPreviewType}
-        onConsumedInitial={() => setInitialPreviewType(null)}
-      />
-      <TeamSection />
-      <PricingSection />
-      <FaqSection />
-      <FinalCta />
-      <MobileStickyCta />
+      <Services />
+      <SelectedWork />
+      <HowItWorks />
+      <WhyWorkWithTvl />
+      <FaqTalk />
+      <ReadyToGrow />
     </div>
   );
 }

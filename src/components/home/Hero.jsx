@@ -1,139 +1,71 @@
-import { useEffect, useRef, useState } from 'react';
-import { LINKS } from '../../constants/links';
-
-// A2: the phone feed scrolls down slowly, "stops" on an ad post, pulses it
-// once, then continues. Pure CSS/JS, no video assets required.
-// The ad posts' images are generated placeholder graphics
-// (public/assets/tvl-home-hero-ad-*.jpg), just so the feed is viewable
-// before real ad footage exists. The non-ad posts are left blank on
-// purpose, since those stand in for other people's organic posts in
-// someone's feed, not TVL's own content.
-const FEED_POSTS = [
-  { id: 'p1', isAd: false },
-  { id: 'p2', isAd: false },
-  { id: 'p3', isAd: true, image: '/assets/tvl-home-hero-ad-1.jpg' },
-  { id: 'p4', isAd: false },
-  { id: 'p5', isAd: false },
-  { id: 'p6', isAd: true, image: '/assets/tvl-home-hero-ad-2.jpg' },
-  { id: 'p7', isAd: false },
-];
+import { useState } from 'react';
+import { hero, backdrops } from '../../data/homeContent';
+import { scrollToTarget } from '../../lib/smoothScroll';
+import { ArrowRightIcon, PlayIcon } from './icons';
+import SectionBackdrop from './SectionBackdrop';
+import Modal from '../Modal';
 
 export default function Hero() {
-  const trackRef = useRef(null);
-  const [pulsedId, setPulsedId] = useState(null);
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return undefined;
-
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) return undefined;
-
-    let cancelled = false;
-    let index = 0;
-    const postHeight = track.firstElementChild?.getBoundingClientRect().height || 0;
-
-    async function step() {
-      while (!cancelled) {
-        const post = FEED_POSTS[index % FEED_POSTS.length];
-        track.classList.add('is-playing');
-        track.style.transform = `translateY(-${index * postHeight}px)`;
-
-        // eslint-disable-next-line no-await-in-loop
-        await wait(2600);
-        if (cancelled) return;
-
-        if (post.isAd) {
-          setPulsedId(post.id);
-          // eslint-disable-next-line no-await-in-loop
-          await wait(900);
-          if (cancelled) return;
-          setPulsedId(null);
-          // eslint-disable-next-line no-await-in-loop
-          await wait(1200);
-          if (cancelled) return;
-        }
-
-        index += 1;
-        if (index >= FEED_POSTS.length) {
-          index = 0;
-          track.classList.remove('is-playing');
-          track.style.transform = 'translateY(0)';
-          // eslint-disable-next-line no-await-in-loop
-          await wait(500);
-        }
-      }
-    }
-
-    function wait(ms) {
-      return new Promise((resolve) => {
-        const t = setTimeout(resolve, ms);
-        return () => clearTimeout(t);
-      });
-    }
-
-    step();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const [watchOpen, setWatchOpen] = useState(false);
 
   return (
-    <section className="tvl-rb-section tvl-rb-section--espresso tvl-rb-hero">
-      <div className="tvl-rb-section__inner tvl-rb-hero__grid">
-        <div className="tvl-rb-hero__content">
-          <h1 className="tvl-rb-h1 tvl-rb-rise">
-            Your brand deserves ads, a store and emails that actually convert.
+    <section className="tvl-home-section tvl-home-section--dark tvl-home-hero" id="hero">
+      <SectionBackdrop variant="hero" {...backdrops.hero} />
+      <div className="tvl-home-inner tvl-home-hero-grid">
+        <div className="tvl-home-hero-copy">
+          <span className="tvl-home-eyebrow">{hero.eyebrow}</span>
+          <h1 className="tvl-home-h1">
+            {hero.heading.map((line, i) => (
+              <span key={line} className={i === hero.headingAccentIndex ? 'tvl-home-accent' : undefined}>
+                {line}
+              </span>
+            ))}
           </h1>
-          <p className="tvl-rb-body tvl-rb-rise tvl-rb-rise--2">
-            We build AI UGC ads, Shopify websites and email marketing for
-            growing ecom brands, without the agency price tag or the back
-            and forth.
-          </p>
-          <div className="tvl-rb-hero__buttons tvl-rb-rise tvl-rb-rise--3">
-            <a href="#free-preview" className="tvl-rb-btn-primary">
-              Get a free preview for your brand
-            </a>
-            <a
-              href={LINKS.calendlyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="tvl-rb-btn-secondary"
+          <p className="tvl-home-body">{hero.body}</p>
+          <div className="tvl-home-cta-row" style={{ marginTop: '2.25rem' }}>
+            <button
+              type="button"
+              className="tvl-home-btn tvl-home-btn--primary"
+              onClick={() => scrollToTarget(`#${hero.primaryCta.targetId}`)}
             >
-              Book a call instead
-            </a>
+              {hero.primaryCta.label}
+              <ArrowRightIcon />
+            </button>
+            <button type="button" className="tvl-home-watch" onClick={() => setWatchOpen(true)}>
+              <PlayIcon />
+              {hero.secondaryCta.label}
+            </button>
           </div>
-          <p className="tvl-rb-small tvl-rb-hero__under">
-            No credit card. No obligation. Just real work for your brand.
-          </p>
         </div>
 
-        <div className="tvl-rb-hero__phone-wrap tvl-rb-rise tvl-rb-rise--phone">
-          <div className="tvl-rb-hero__phone">
-            <div className="tvl-rb-hero__feed">
-              <div className="tvl-rb-hero__feed-track" ref={trackRef}>
-                {FEED_POSTS.map((post) => (
-                  <div
-                    key={post.id}
-                    className={
-                      'tvl-rb-hero__feed-post' +
-                      (post.isAd ? ' tvl-rb-hero__feed-post--ad' : '') +
-                      (pulsedId === post.id ? ' is-pulsed' : '')
-                    }
-                  >
-                    {post.isAd && (
-                      <>
-                        <span className="tvl-rb-hero__feed-sponsored">Sponsored</span>
-                        {post.image && <img src={post.image} alt="" aria-hidden="true" />}
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+        <div className="tvl-home-hero-media">
+          <img src={hero.image} alt="TVL ecommerce creative studio workspace" loading="eager" />
+          <span className="tvl-home-hero-badge">
+            <span className="tvl-home-hero-badge-dot" aria-hidden="true" />
+            {hero.badge}
+          </span>
         </div>
       </div>
+      <span className="tvl-home-scroll-cue" aria-hidden="true">
+        <span className="tvl-home-scroll-cue-line" />
+        Scroll to discover
+      </span>
+
+      <Modal open={watchOpen} onClose={() => setWatchOpen(false)} ariaLabel="Watch our work">
+        <div className="tvl-home-watch-modal">
+          <h3 className="tvl-home-h3" style={{ fontSize: '1.4rem' }}>Watch Our Work</h3>
+          {hero.videoSrc ? (
+            <video className="tvl-home-watch-modal-video" src={hero.videoSrc} controls autoPlay playsInline />
+          ) : (
+            // TODO: Sheena to provide the real studio reel. Swap this placeholder
+            // once hero.videoSrc (src/data/homeContent.js) points at a real file.
+            <div className="tvl-home-watch-modal-placeholder">
+              <PlayIcon />
+              <p className="tvl-home-body">Our demo reel is coming soon. In the meantime, book a free strategy call to see real examples of our work.</p>
+            </div>
+          )}
+        </div>
+      </Modal>
     </section>
   );
 }

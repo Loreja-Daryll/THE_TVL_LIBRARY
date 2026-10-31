@@ -1,34 +1,27 @@
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { LINKS } from '../constants/links';
-
-const NAV_LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Services', href: '#services' },
-  { label: 'Process', href: '#free-preview' },
-  { label: 'Contact', href: '#contact' },
-];
+import { nav as navContent } from '../data/homeContent';
+import { scrollToTarget } from '../lib/smoothScroll';
+import { HOME_SECTIONS, getActiveIndex, subscribeActive } from '../lib/activeSection';
 
 function scrollToSection(hash) {
   if (!hash) return;
-  const target = document.querySelector(hash);
-  if (!target) {
+  if (!document.querySelector(hash)) {
     window.location.href = `/${hash}`;
     return;
   }
-  const nav = document.getElementById('tvl-nav');
-  const navOffset = nav ? nav.offsetHeight + 16 : 80;
-  const targetY = target.getBoundingClientRect().top + window.scrollY - navOffset;
-  window.scrollTo({ top: targetY, behavior: 'smooth' });
+  scrollToTarget(hash);
   if (history.pushState) history.pushState(null, '', hash);
 }
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const activeIndex = useSyncExternalStore(subscribeActive, getActiveIndex, () => 0);
+  const activeHash = HOME_SECTIONS[activeIndex]?.hash || '';
 
   const handleLinkClick = (e, hash) => {
     e.preventDefault();
     setOpen(false);
-    // Same 350ms delay the original theme uses to let the mobile drawer close first.
     setTimeout(() => scrollToSection(hash), 350);
   };
 
@@ -54,7 +47,7 @@ export default function Nav() {
         </button>
 
         <nav className="tvl-nav__mobile-links" aria-label="Mobile navigation">
-          {NAV_LINKS.map((link) => (
+          {navContent.links.map((link) => (
             <a
               key={link.label}
               href={link.href}
@@ -71,36 +64,32 @@ export default function Nav() {
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}
           >
-            Book a Discovery Call
+            Book a Call
           </a>
-          {/* Course page isn't finished yet. Commented out, not deleted,
-              bring it back by uncommenting once it's ready. */}
-          {/* <a
-            href="https://tvl-course-dashboard.pages.dev/"
-            className="tvl-nav__mobile-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Course
-          </a> */}
         </nav>
       </div>
 
-      {/* ============ NAVBAR PILL ============ */}
+      {/* ============ NAVBAR ============ */}
       <div className="tvl-nav" id="tvl-nav" role="banner">
         <div className="tvl-nav__container">
-          <div className="tvl-nav__pill">
-            <a href="/" className="tvl-nav__logo" aria-label="The VA Library — home">
+          <div className="tvl-nav__bar">
+            <a href="/" className="tvl-nav__logo" aria-label="TVL — Ecommerce Creative Studio, home">
               <span className="tvl-nav__logo-mark">TVL</span>
-              <span className="tvl-nav__logo-text">The VA Library</span>
+              <span className="tvl-nav__logo-divider" aria-hidden="true" />
+              <span className="tvl-nav__logo-text">
+                Ecommerce
+                <br />
+                Creative Studio
+              </span>
             </a>
 
             <nav className="tvl-nav__links" aria-label="Main navigation">
-              {NAV_LINKS.map((link) => (
+              {navContent.links.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
-                  className="tvl-nav__link"
+                  className={`tvl-nav__link${activeHash === link.href ? ' is-active' : ''}`}
+                  aria-current={activeHash === link.href ? 'true' : undefined}
                   onClick={(e) => handleDesktopLinkClick(e, link.href)}
                 >
                   {link.label}
@@ -115,19 +104,8 @@ export default function Nav() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span>Book a Discovery Call</span>
+                <span>Book a Call</span>
               </a>
-
-              {/* Course page isn't finished yet. Commented out, not deleted,
-                  bring it back by uncommenting once it's ready. */}
-              {/* <a
-                href="https://tvl-course-dashboard.pages.dev/"
-                className="tvl-nav__cta tvl-nav__cta--sm"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>Course</span>
-              </a> */}
 
               <button
                 className="tvl-nav__toggle"
