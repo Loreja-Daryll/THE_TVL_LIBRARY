@@ -49,7 +49,7 @@ export default function StudioNav() {
 
         <nav className="tvl-snav__mobile-links" aria-label="Mobile navigation">
           <Link to="/" className="tvl-snav__mobile-link tvl-snav__mobile-link--back" onClick={() => setOpen(false)}>
-            ← Back to main page
+            ← Back to main
           </Link>
           {navContent.links.map((link) => (
             <a
