@@ -1,0 +1,79 @@
+/* ============================================================
+   Reusable Modal — src/components/Modal.jsx
+   Scoped to .tvl-modal-* classes only, safe to import globally.
+   ============================================================ */
+
+.tvl-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2500000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(10, 9, 8, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.tvl-modal-panel {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  border-radius: 20px;
+  background: #1a1410;
+  color: #f5f0e8;
+  border: 1px solid rgba(229, 184, 66, 0.25);
+  box-shadow: 0 50px 100px -30px rgba(0, 0, 0, 0.7);
+  padding: 2.5rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+@media (max-width: 600px) {
+  .tvl-modal-panel { padding: 1.75rem 1.5rem; border-radius: 16px; }
+}
+
+.tvl-modal-close {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f5f0e8;
+  cursor: pointer;
+  transition: border-color 200ms ease, color 200ms ease, transform 200ms ease;
+}
+.tvl-modal-close svg { width: 18px; height: 18px; }
+.tvl-modal-close:hover { border-color: #e5b842; color: #e5b842; transform: rotate(90deg); }
+.tvl-modal-close:focus-visible { outline: 2px solid #e5b842; outline-offset: 3px; }
+
+.tvl-modal-toast {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background: rgba(229, 184, 66, 0.12);
+  border: 1px solid rgba(229, 184, 66, 0.35);
+  color: #ffd86b;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.tvl-modal-toast-check { color: #ffd86b; flex-shrink: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tvl-modal-panel,
+  .tvl-modal-backdrop,
+  .tvl-modal-toast {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+}

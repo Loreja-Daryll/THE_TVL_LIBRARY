@@ -1,0 +1,47 @@
+/* Scroll hand-overs for the main TVL site (src/hooks/useMainTransitions.js).
+   Only active while the main homepage is mounted: HomePage adds
+   "tvl-main-mode" to <html>, and the hook adds "tvl-main-stack" on desktop. */
+
+/* Lenis drives smooth scrolling here; native smooth-scroll would fight it. */
+html.tvl-main-mode {
+  scroll-behavior: auto;
+}
+
+/* Sections slide in from the sides, so hide any sideways overflow */
+html.tvl-main-mode,
+html.tvl-main-mode body {
+  overflow-x: clip;
+}
+
+/* A section that covers the previous one must hide it completely, so it gets a
+   solid ink background (with the same soft gold glow) and is at least one
+   screen tall. Same brand colors, nothing else changes. */
+html.tvl-main-stack #process,
+html.tvl-main-stack #services,
+html.tvl-main-stack #about,
+html.tvl-main-stack #reviews,
+html.tvl-main-stack #booking {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 75% 55% at 50% 0%, rgba(229, 184, 66, 0.09) 0%, rgba(229, 184, 66, 0) 70%),
+    #0a0908;
+}
+
+/* When a section is stretched to a full screen, center its content vertically
+   (width:100% keeps the inner column the same width as before). */
+html.tvl-main-stack #process,
+html.tvl-main-stack #services,
+html.tvl-main-stack #about,
+html.tvl-main-stack #reviews,
+html.tvl-main-stack #booking {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+html.tvl-main-stack #process > [class*="__inner"],
+html.tvl-main-stack #services > [class*="__inner"],
+html.tvl-main-stack #about > [class*="__inner"],
+html.tvl-main-stack #reviews > [class*="__inner"],
+html.tvl-main-stack #booking > [class*="__inner"] {
+  width: 100%;
+}

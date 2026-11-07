@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { scrollToTarget } from '../lib/smoothScroll';
 
 const NAV_LINKS = [
   { label: 'About', href: '#about' },
@@ -7,17 +9,21 @@ const NAV_LINKS = [
   { label: 'Contact', href: '#contact' },
 ];
 
+// Coming from the main site, the route curtain is already the transition, so
+// skip the Creative Studio intro loader (it still plays on a direct visit).
+function skipStudioIntro() {
+  try { window.sessionStorage.setItem('tvl-intro-seen', '1'); } catch (e) { /* ignore */ }
+}
+
 function scrollToSection(hash) {
   if (!hash) return;
-  const target = document.querySelector(hash);
-  if (!target) {
+  if (!document.querySelector(hash)) {
     window.location.href = `/${hash}`;
     return;
   }
-  const nav = document.getElementById('tvl-nav');
-  const navOffset = nav ? nav.offsetHeight + 16 : 80;
-  const targetY = target.getBoundingClientRect().top + window.scrollY - navOffset;
-  window.scrollTo({ top: targetY, behavior: 'smooth' });
+  // Jump straight to the section (the hand-over animations would make a long
+  // animated scroll lag). Falls back to a normal jump where Lenis isn't running.
+  scrollToTarget(hash);
   if (history.pushState) history.pushState(null, '', hash);
 }
 
@@ -66,6 +72,16 @@ export default function Nav() {
           <a href="#booking" className="tvl-nav__mobile-cta" onClick={(e) => handleLinkClick(e, '#booking')}>
             Book a Discovery Call
           </a>
+          <Link
+            to="/studio"
+            className="tvl-nav__mobile-link"
+            onClick={() => {
+              skipStudioIntro();
+              setOpen(false);
+            }}
+          >
+            Studio
+          </Link>
         </nav>
       </div>
 
@@ -95,6 +111,14 @@ export default function Nav() {
               <a href="#booking" className="tvl-nav__cta" onClick={(e) => handleDesktopLinkClick(e, '#booking')}>
                 <span>Book a Discovery Call</span>
               </a>
+
+              <Link
+                to="/studio"
+                className="tvl-nav__cta tvl-nav__cta--sm"
+                onClick={skipStudioIntro}
+              >
+                <span>Studio</span>
+              </Link>
 
               <button
                 className="tvl-nav__toggle"

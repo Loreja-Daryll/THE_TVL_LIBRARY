@@ -1,6 +1,13 @@
 import useReveal from '../hooks/useReveal';
 
 const ICONS = {
+  store: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 9a2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0 2 2 2 2 0 0 0 2-2l-1.5-5.5A1 1 0 0 0 18.5 3h-13a1 1 0 0 0-1 .7L3 9Z" />
+      <path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9" />
+      <path d="M9 21v-6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v6" />
+    </svg>
+  ),
   briefcase: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
@@ -93,6 +100,15 @@ const ArrowIcon = () => (
   </svg>
 );
 
+// Flagship service — rendered as its own highlighted banner above the grid
+const FEATURED_SERVICE = {
+  icon: 'store',
+  badge: 'Our Specialty',
+  title: 'Shopify Store Setup & Management',
+  text: 'From store creation to day-to-day operations — we build, launch, and run Shopify stores that convert, with hands-on tutorials so you understand every part of it.',
+  tags: ['Store Setup', 'Product Listings', 'Theme Customization', 'Payment Integration', 'Ongoing Management', 'Tutorials & Training'],
+};
+
 // Exact block order + settings from templates/index.json ("services_hzpgV8")
 const SERVICES = [
   { icon: 'briefcase', title: 'Operational Support', text: 'Embedded operators who run the back-end of your business with precision.' },
@@ -126,6 +142,30 @@ export default function Services() {
             time, focus, and margin back.
           </p>
         </div>
+
+        {/* FEATURED / FLAGSHIP SERVICE */}
+        <a
+          href="#booking"
+          className="tvl-svc-featured tvl-glass tvl-reveal"
+        >
+          <div className="tvl-svc-featured__glow" aria-hidden="true"></div>
+          <span className="tvl-svc-featured__badge">{FEATURED_SERVICE.badge}</span>
+          <div className="tvl-svc-featured__content">
+            <div className="tvl-svc-featured__icon">{ICONS[FEATURED_SERVICE.icon]}</div>
+            <div className="tvl-svc-featured__body">
+              <h3 className="tvl-svc-featured__title">{FEATURED_SERVICE.title}</h3>
+              <p className="tvl-svc-featured__text">{FEATURED_SERVICE.text}</p>
+              <div className="tvl-svc-featured__tags">
+                {FEATURED_SERVICE.tags.map((tag) => (
+                  <span key={tag} className="tvl-svc-featured__tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+            <div className="tvl-svc-featured__arrow" aria-hidden="true">
+              <ArrowIcon />
+            </div>
+          </div>
+        </a>
 
         <div className="tvl-services__grid">
           {SERVICES.map((s, i) => (

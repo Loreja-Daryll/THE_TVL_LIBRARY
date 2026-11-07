@@ -166,3 +166,153 @@
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.62);
 }
+
+/* ===================== FEATURED / FLAGSHIP SERVICE ===================== */
+
+.tvl-svc-featured {
+  display: block;
+  position: relative;
+  margin-top: 3rem;
+  border-radius: 1.75rem;
+  padding: 2.5rem 2rem;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  border: 1px solid rgba(229, 184, 66, 0.5);
+  background: linear-gradient(135deg, rgba(229, 184, 66, 0.1) 0%, rgba(255, 255, 255, 0.02) 60%);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08),
+    0 20px 50px -20px rgba(229, 184, 66, 0.35);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease, border-color 0.5s ease;
+}
+
+.tvl-svc-featured:hover {
+  transform: translateY(-4px);
+  border-color: rgba(229, 184, 66, 0.85);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+    0 25px 70px -15px rgba(229, 184, 66, 0.5);
+}
+
+.tvl-svc-featured__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 15% 20%, rgba(255, 216, 107, 0.25) 0%, transparent 55%);
+  opacity: 0.8;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.tvl-svc-featured:hover .tvl-svc-featured__glow {
+  opacity: 1;
+}
+
+.tvl-svc-featured__badge {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #0a0908;
+  background: linear-gradient(110deg, #e5b842, #ffd86b, #fff4c2);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 1.5rem;
+}
+
+.tvl-svc-featured__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .tvl-svc-featured__content {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+}
+
+.tvl-svc-featured__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1.25rem;
+  background: linear-gradient(to bottom, rgba(229, 184, 66, 0.35), rgba(229, 184, 66, 0.08));
+  box-shadow: inset 0 0 0 1px rgba(229, 184, 66, 0.45);
+  color: #ffd86b;
+}
+
+.tvl-svc-featured__icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.tvl-svc-featured__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.tvl-svc-featured__title {
+  margin: 0;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  line-height: 1.15;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.tvl-svc-featured__text {
+  margin: 0.85rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 40rem;
+}
+
+.tvl-svc-featured__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.tvl-svc-featured__tag {
+  font-size: 0.75rem;
+  color: rgba(255, 216, 107, 0.9);
+  border: 1px solid rgba(229, 184, 66, 0.35);
+  background: rgba(229, 184, 66, 0.06);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+}
+
+.tvl-svc-featured__arrow {
+  flex: none;
+  align-self: center;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 0.4s ease, transform 0.4s ease;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .tvl-svc-featured__arrow {
+    display: block;
+  }
+}
+
+.tvl-svc-featured__arrow svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.tvl-svc-featured:hover .tvl-svc-featured__arrow {
+  color: #e5b842;
+  transform: rotate(12deg);
+}

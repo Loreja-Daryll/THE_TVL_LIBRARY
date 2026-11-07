@@ -642,6 +642,19 @@ export default function BecomeAVa() {
           </div>
           <p>Open the link, then File → Make a copy, and edit your own version.</p>
         </a>
+        <a
+          className="bva-card"
+          href="https://resume-45v.pages.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ marginTop: '1rem', display: 'block' }}
+        >
+          <div className="bva-card-top">
+            <h3>See real sample resumes</h3>
+            <span className="bva-card-provider">Resume Gallery</span>
+          </div>
+          <p>Browse resumes we've helped real VAs build, and see what a hireable one actually looks like.</p>
+        </a>
       </section>
 
       {/* PORTFOLIO */}

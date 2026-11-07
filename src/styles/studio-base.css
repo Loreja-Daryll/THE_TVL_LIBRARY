@@ -1,0 +1,19 @@
+/* Creative Studio (/studio) page-level rules. These used to live in main.css
+   when the studio was the whole site; now they apply only while the studio is
+   mounted (StudioPage adds the "tvl-studio-mode" class to <html>). */
+
+/* Lenis drives smooth scrolling here; native smooth-scroll would fight it. */
+html.tvl-studio-mode {
+  scroll-behavior: auto;
+}
+
+html.tvl-studio-mode [id="hero"],
+html.tvl-studio-mode [id="services"],
+html.tvl-studio-mode [id="work"],
+html.tvl-studio-mode [id="how-it-works"],
+html.tvl-studio-mode [id="why-tvl"],
+html.tvl-studio-mode [id="faq"],
+html.tvl-studio-mode [id="lets-talk"],
+html.tvl-studio-mode [id="ready-to-grow"] {
+  scroll-margin-top: 6rem;
+}
