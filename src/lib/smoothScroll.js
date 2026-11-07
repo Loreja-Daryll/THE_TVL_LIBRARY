@@ -67,11 +67,11 @@ export function docTop(el) {
   return y;
 }
 
-// True when the homepage is running its stacked full-screen hand-overs
-// (see hooks/useSectionTransitions.js); keep this query in sync with it.
+// True when a homepage is running its stacked hand-overs: the Creative Studio
+// (hooks/useSectionTransitions.js) or the main site (hooks/useMainTransitions.js); keep this query in sync with it.
 export function isStackedLayout() {
   return (
-    !!document.querySelector('.tvl-home') &&
+    (!!document.querySelector('.tvl-home') || document.documentElement.classList.contains('tvl-main-stack')) &&
     window.matchMedia('(min-width: 980px) and (min-height: 560px) and (prefers-reduced-motion: no-preference)').matches
   );
 }

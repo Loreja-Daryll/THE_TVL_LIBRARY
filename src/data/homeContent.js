@@ -14,7 +14,7 @@ export const nav = {
 };
 
 export const hero = {
-  eyebrow: 'Ecommerce Creative Studio',
+  eyebrow: 'Creative Studio',
   heading: ['Ads that stop the scroll.', 'Stores that sell.', 'Emails that bring them back.'],
   headingAccentIndex: 2,
   body: 'We create AI video ads, Shopify websites and email flows for ecommerce brands ready to grow.',
@@ -33,7 +33,7 @@ export const services = {
   eyebrow: 'Our Services',
   heading: ['A complete growth system for', 'ecommerce brands.'],
   headingAccentIndex: 1,
-  body: 'Creative, conversion and retention — working together to help your brand grow.',
+  body: 'Creative, conversion and retention, working together to help your brand grow.',
   cards: [
     {
       id: 'ads',
@@ -152,7 +152,7 @@ export const whyWorkWithTvl = {
     {
       icon: 'handshake',
       title: 'A collaborative, long-term approach',
-      line: 'We see ourselves as an extension of your team — focused on continuous improvement, not just one-time deliverables.',
+      line: 'We see ourselves as an extension of your team, focused on continuous improvement, not just one-time deliverables.',
     },
   ],
 };
@@ -175,21 +175,21 @@ export const faq = {
     {
       question: 'What types of ecommerce brands do you work with?',
       answer:
-        'We work with ecommerce brands across categories, including skincare, supplements, fashion and home goods. [Sheena to confirm any category restrictions]',
+        'We work with ecommerce brands across categories, including skincare, supplements, fashion and home goods.',
     },
     {
       question: 'How long does it take to get started?',
       answer:
-        'We start with a free 30-minute strategy call to understand your brand and goals. Project timelines after that depend on scope. [Sheena to confirm typical turnaround]',
+        'We start with a free 30-minute strategy call to understand your brand and goals. Project timelines after that depend on scope.',
     },
     {
       question: 'What is the investment?',
       answer:
-        'Pricing depends on which service (or combination of services) fits your brand. We’ll walk through options on your strategy call. [Sheena to add pricing ranges]',
+        'Pricing depends on which service (or combination of services) fits your brand. We’ll walk through options on your strategy call.',
     },
     {
       question: 'How is the work delivered?',
-      answer: 'Deliverables are shared digitally — ad files, staging links for website work, and email flows set up directly in your platform. [Sheena to confirm delivery process]',
+      answer: 'Deliverables are shared digitally, ad files, staging links for website work, and email flows set up directly in your platform.',
     },
     {
       question: 'Can you work with my existing Shopify store?',

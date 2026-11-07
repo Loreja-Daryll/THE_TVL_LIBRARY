@@ -1,8 +1,19 @@
-import { useState, useSyncExternalStore } from 'react';
-import { LINKS } from '../constants/links';
-import { nav as navContent } from '../data/homeContent';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { scrollToTarget } from '../lib/smoothScroll';
-import { HOME_SECTIONS, getActiveIndex, subscribeActive } from '../lib/activeSection';
+
+const NAV_LINKS = [
+  { label: 'About', href: '#about' },
+  { label: 'Services', href: '#services' },
+  { label: 'Process', href: '#process' },
+  { label: 'Contact', href: '#contact' },
+];
+
+// Coming from the main site, the route curtain is already the transition, so
+// skip the Creative Studio intro loader (it still plays on a direct visit).
+function skipStudioIntro() {
+  try { window.sessionStorage.setItem('tvl-intro-seen', '1'); } catch (e) { /* ignore */ }
+}
 
 function scrollToSection(hash) {
   if (!hash) return;
@@ -10,18 +21,19 @@ function scrollToSection(hash) {
     window.location.href = `/${hash}`;
     return;
   }
+  // Jump straight to the section (the hand-over animations would make a long
+  // animated scroll lag). Falls back to a normal jump where Lenis isn't running.
   scrollToTarget(hash);
   if (history.pushState) history.pushState(null, '', hash);
 }
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
-  const activeIndex = useSyncExternalStore(subscribeActive, getActiveIndex, () => 0);
-  const activeHash = HOME_SECTIONS[activeIndex]?.hash || '';
 
   const handleLinkClick = (e, hash) => {
     e.preventDefault();
     setOpen(false);
+    // Same 350ms delay the original theme uses to let the mobile drawer close first.
     setTimeout(() => scrollToSection(hash), 350);
   };
 
@@ -47,7 +59,7 @@ export default function Nav() {
         </button>
 
         <nav className="tvl-nav__mobile-links" aria-label="Mobile navigation">
-          {navContent.links.map((link) => (
+          {NAV_LINKS.map((link) => (
             <a
               key={link.label}
               href={link.href}
@@ -57,39 +69,37 @@ export default function Nav() {
               {link.label}
             </a>
           ))}
-          <a
-            href={LINKS.calendlyUrl}
-            className="tvl-nav__mobile-cta"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setOpen(false)}
-          >
-            Book a Call
+          <a href="#booking" className="tvl-nav__mobile-cta" onClick={(e) => handleLinkClick(e, '#booking')}>
+            Book a Discovery Call
           </a>
+          <Link
+            to="/studio"
+            className="tvl-nav__mobile-link"
+            onClick={() => {
+              skipStudioIntro();
+              setOpen(false);
+            }}
+          >
+            Studio
+          </Link>
         </nav>
       </div>
 
-      {/* ============ NAVBAR ============ */}
+      {/* ============ NAVBAR PILL ============ */}
       <div className="tvl-nav" id="tvl-nav" role="banner">
         <div className="tvl-nav__container">
-          <div className="tvl-nav__bar">
-            <a href="/" className="tvl-nav__logo" aria-label="TVL — Ecommerce Creative Studio, home">
+          <div className="tvl-nav__pill">
+            <a href="/" className="tvl-nav__logo" aria-label="The VA Library — home">
               <span className="tvl-nav__logo-mark">TVL</span>
-              <span className="tvl-nav__logo-divider" aria-hidden="true" />
-              <span className="tvl-nav__logo-text">
-                Ecommerce
-                <br />
-                Creative Studio
-              </span>
+              <span className="tvl-nav__logo-text">The VA Library</span>
             </a>
 
             <nav className="tvl-nav__links" aria-label="Main navigation">
-              {navContent.links.map((link) => (
+              {NAV_LINKS.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
-                  className={`tvl-nav__link${activeHash === link.href ? ' is-active' : ''}`}
-                  aria-current={activeHash === link.href ? 'true' : undefined}
+                  className="tvl-nav__link"
                   onClick={(e) => handleDesktopLinkClick(e, link.href)}
                 >
                   {link.label}
@@ -98,14 +108,17 @@ export default function Nav() {
             </nav>
 
             <div className="tvl-nav__right">
-              <a
-                href={LINKS.calendlyUrl}
-                className="tvl-nav__cta"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <span>Book a Call</span>
+              <a href="#booking" className="tvl-nav__cta" onClick={(e) => handleDesktopLinkClick(e, '#booking')}>
+                <span>Book a Discovery Call</span>
               </a>
+
+              <Link
+                to="/studio"
+                className="tvl-nav__cta tvl-nav__cta--sm"
+                onClick={skipStudioIntro}
+              >
+                <span>Studio</span>
+              </Link>
 
               <button
                 className="tvl-nav__toggle"

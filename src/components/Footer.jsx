@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom';
 import { LINKS } from '../constants/links';
-import { footer as footerContent } from '../data/homeContent';
-import { scrollToTarget } from '../lib/smoothScroll';
 
 const FacebookIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -15,36 +13,6 @@ const LinkedInIcon = () => (
     <circle cx="4" cy="4" r="2" />
   </svg>
 );
-const InstagramIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="2" y="2" width="20" height="20" rx="5" />
-    <circle cx="12" cy="12" r="4" />
-    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-  </svg>
-);
-const YoutubeIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="2" y="5" width="20" height="14" rx="4" />
-    <path d="m10 9 5 3-5 3Z" fill="currentColor" stroke="none" />
-  </svg>
-);
-
-const SOCIAL_LINKS = [
-  { href: LINKS.socialLinkedin, label: 'LinkedIn', Icon: LinkedInIcon },
-  { href: LINKS.socialInstagram, label: 'Instagram', Icon: InstagramIcon },
-  { href: LINKS.socialYoutube, label: 'YouTube', Icon: YoutubeIcon },
-  { href: LINKS.socialFacebook, label: 'Facebook', Icon: FacebookIcon },
-].filter((item) => item.href);
-
-function handleAnchorClick(e, href) {
-  if (!href.startsWith('#')) return;
-  e.preventDefault();
-  if (!document.querySelector(href)) {
-    window.location.href = `/${href}`;
-    return;
-  }
-  scrollToTarget(href);
-}
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -52,61 +20,32 @@ export default function Footer() {
   return (
     <footer className="tvl-footer" id="contact">
       <div className="tvl-footer__inner">
-        <div className="tvl-footer__grid">
-          <div className="tvl-footer__brand">
-            <span className="tvl-footer__logo">TVL</span>
-            <span className="tvl-footer__tagline">
-              Ecommerce
-              <br />
-              Creative Studio
-            </span>
-            <p className="tvl-footer__blurb">{footerContent.blurb}</p>
-          </div>
-
-          <div className="tvl-footer__col">
-            <h3 className="tvl-footer__heading">Quick Links</h3>
-            {footerContent.quickLinks.map((link) => (
-              <a key={link.label} href={link.href} onClick={(e) => handleAnchorClick(e, link.href)}>
-                {link.label}
+        {(LINKS.socialFacebook || LINKS.socialLinkedin) && (
+          <div className="tvl-footer__social" aria-label="Social media">
+            {LINKS.socialFacebook && (
+              <a href={LINKS.socialFacebook} className="tvl-footer__social-link" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <FacebookIcon />
               </a>
-            ))}
-          </div>
-
-          <div className="tvl-footer__col">
-            <h3 className="tvl-footer__heading">Services</h3>
-            {footerContent.serviceLinks.map((link) => (
-              <a key={link.label} href={link.href} onClick={(e) => handleAnchorClick(e, link.href)}>
-                {link.label}
+            )}
+            {LINKS.socialLinkedin && (
+              <a href={LINKS.socialLinkedin} className="tvl-footer__social-link" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <LinkedInIcon />
               </a>
-            ))}
+            )}
           </div>
-
-          <div className="tvl-footer__col">
-            <h3 className="tvl-footer__heading">Contact</h3>
-            <a href={`mailto:${LINKS.contactEmail}`}>{LINKS.contactEmail}</a>
-            <a href={LINKS.calendlyUrl} target="_blank" rel="noopener noreferrer">
-              Book a Strategy Call
-            </a>
-          </div>
-
-          <div className="tvl-footer__col">
-            <h3 className="tvl-footer__heading">Follow Us</h3>
-            <div className="tvl-footer__social" aria-label="Social media">
-              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
-                <a key={label} href={href} className="tvl-footer__social-link" target="_blank" rel="noopener noreferrer" aria-label={label}>
-                  <Icon />
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
+        )}
 
         <div className="tvl-footer__bottom">
-          <span>© {year} TVL. All rights reserved.</span>
-          <div className="tvl-footer__bottom-links">
-            <Link to="/privacy">Privacy Policy</Link>
-            <Link to="/terms">Terms of Service</Link>
+          <div className="tvl-footer__left">
+            <span className="tvl-footer__logo">TVL</span>
+            <span>© {year} The VA Library. All rights reserved.</span>
+          </div>
+          <div className="tvl-footer__right">
             <Link to="/become-a-va">Become a VA</Link>
+            <a href="https://resume-45v.pages.dev/" target="_blank" rel="noopener noreferrer">Resume Gallery</a>
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
+            <a href={`mailto:${LINKS.contactEmail}`}>{LINKS.contactEmail}</a>
           </div>
         </div>
       </div>

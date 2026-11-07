@@ -113,7 +113,7 @@ body.tvl-nav-locked {
 }
 
 /* ============================================================ */
-/*  NAVBAR — full-width sticky bar                               */
+/*  NAVBAR — sticky fixed                                        */
 /* ============================================================ */
 div.tvl-nav,
 .tvl-nav,
@@ -132,10 +132,6 @@ div.tvl-nav,
   animation: tvl-nav-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
   isolation: isolate;
   pointer-events: auto;
-  background: rgba(10, 9, 8, 0.82);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 @keyframes tvl-nav-in {
@@ -144,25 +140,32 @@ div.tvl-nav,
 }
 
 .tvl-nav__container {
-  max-width: 78rem;
+  max-width: 72rem;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 1rem 1.5rem 0;
   position: relative;
   z-index: 2;
 }
 
-.tvl-nav__bar {
+.tvl-nav__pill {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  min-height: 4.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 9999px;
+  background: rgba(20, 18, 16, 0.85);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
+    0 8px 32px -8px rgba(0, 0, 0, 0.5);
 }
 
 .tvl-nav__logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.625rem;
   text-decoration: none;
   transition: opacity 0.2s ease;
 }
@@ -171,9 +174,9 @@ div.tvl-nav,
 
 .tvl-nav__logo-mark {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 1.65rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   line-height: 1;
   background: linear-gradient(135deg, #e5b842 0%, #ffd86b 50%, #e5b842 100%);
   -webkit-background-clip: text;
@@ -182,30 +185,23 @@ div.tvl-nav,
   color: transparent;
 }
 
-.tvl-nav__logo-divider {
-  width: 1px;
-  height: 1.75rem;
-  background: rgba(255, 255, 255, 0.18);
-}
-
 .tvl-nav__logo-text {
-  font-size: 0.6rem;
-  line-height: 1.35;
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.5);
   white-space: nowrap;
 }
 
 .tvl-nav__links {
   display: flex;
   align-items: center;
-  gap: 2.25rem;
+  gap: 2rem;
 }
 
 .tvl-nav__link {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   transition: color 0.2s ease;
   position: relative;
@@ -230,38 +226,36 @@ div.tvl-nav,
 }
 
 .tvl-nav__link:hover::after { transform: scaleX(1); }
-.tvl-nav__link.is-active { color: #ffd86b; }
-.tvl-nav__link.is-active::after { transform: scaleX(1); }
 
 .tvl-nav__right {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .tvl-nav__cta {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  min-height: 2.75rem;
-  padding: 0 1.4rem;
+  padding: 0.55rem 1rem;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #e5b842 0%, #ffd86b 100%);
-  color: #1a1614;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  border: 1px solid rgba(229, 184, 66, 0.45);
+  background: linear-gradient(to bottom, rgba(229, 184, 66, 0.22), rgba(229, 184, 66, 0.06));
+  color: #ffd86b;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
-  box-shadow: 0 10px 26px -12px rgba(229, 184, 66, 0.7);
+  transition: all 0.3s ease;
 }
 
 .tvl-nav__cta:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.05);
-  box-shadow: 0 14px 32px -10px rgba(229, 184, 66, 0.8);
+  background: linear-gradient(to bottom, rgba(229, 184, 66, 0.35), rgba(229, 184, 66, 0.12));
+  color: #fff4c2;
+  border-color: rgba(229, 184, 66, 0.7);
+  box-shadow: 0 0 30px -5px rgba(229, 184, 66, 0.6);
 }
 
 .tvl-nav__toggle {
@@ -273,7 +267,7 @@ div.tvl-nav,
   height: 36px;
   padding: 8px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 50%;
   cursor: pointer;
   position: relative;
@@ -300,8 +294,7 @@ div.tvl-nav,
 
 @media (max-width: 480px) {
   .tvl-nav__logo-text { display: none; }
-  .tvl-nav__logo-divider { display: none; }
-  .tvl-nav__container { padding: 0 1rem; }
+  .tvl-nav__container { padding: 0.75rem 1rem 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

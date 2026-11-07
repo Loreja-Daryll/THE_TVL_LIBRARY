@@ -52,7 +52,7 @@ export function startActiveSectionTracking() {
 
     // keep the URL hash in sync without adding history entries
     const wanted = HOME_SECTIONS[idx].hash;
-    if (window.location.pathname === '/' && window.location.hash !== wanted) {
+    if (window.location.pathname === '/studio' && window.location.hash !== wanted) {
       try {
         window.history.replaceState(null, '', wanted ? wanted : window.location.pathname + window.location.search);
       } catch (e) {
