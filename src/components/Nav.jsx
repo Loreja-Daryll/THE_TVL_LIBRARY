@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { scrollToTarget } from '../lib/smoothScroll';
 
 const NAV_LINKS = [
   { label: 'About', href: '#about' },
@@ -17,13 +16,15 @@ function skipStudioIntro() {
 
 function scrollToSection(hash) {
   if (!hash) return;
-  if (!document.querySelector(hash)) {
+  const target = document.querySelector(hash);
+  if (!target) {
     window.location.href = `/${hash}`;
     return;
   }
-  // Jump straight to the section (the hand-over animations would make a long
-  // animated scroll lag). Falls back to a normal jump where Lenis isn't running.
-  scrollToTarget(hash);
+  const nav = document.getElementById('tvl-nav');
+  const navOffset = nav ? nav.offsetHeight + 16 : 80;
+  const targetY = target.getBoundingClientRect().top + window.scrollY - navOffset;
+  window.scrollTo({ top: targetY, behavior: 'smooth' });
   if (history.pushState) history.pushState(null, '', hash);
 }
 
